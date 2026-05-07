@@ -24,7 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p+58eccp6218vt7i@n10#fo+%__4_on_jnt@m3#^t7=-a8%(!z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
+# En Vercel, por defecto NO mostramos debug.
+_is_vercel = os.getenv("VERCEL") == "1" or bool(os.getenv("VERCEL_URL"))
+DEBUG = os.getenv("DJANGO_DEBUG", "0" if _is_vercel else "1") == "1"
 
 # Vercel injecta VERCEL_URL (sin esquema). Permitimos también localhost.
 _vercel_url = os.getenv("VERCEL_URL")
@@ -86,7 +88,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # En Vercel (/var/task) es de solo lectura. Usamos /tmp (escritura efímera).
+        'NAME': (Path("/tmp") / "db.sqlite3") if _is_vercel else (BASE_DIR / 'db.sqlite3'),
     }
 }
 

@@ -4,5 +4,8 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
+from .bootstrap import ensure_db_ready
+
+ensure_db_ready()
 application = get_wsgi_application()
 
