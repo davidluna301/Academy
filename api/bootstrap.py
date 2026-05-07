@@ -13,6 +13,9 @@ def ensure_db_ready() -> None:
     En Vercel, SQLite vive en /tmp (efímero). Inicializamos migraciones
     una sola vez por cold start usando un sentinel en /tmp.
     """
+    # Asegura settings module antes de setup/migrate
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+
     is_vercel = os.getenv("VERCEL") == "1" or bool(os.getenv("VERCEL_URL"))
     if not is_vercel:
         return
