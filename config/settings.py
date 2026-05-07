@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,18 +22,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p+58eccp6218vt7i@n10#fo+%__4_on_jnt@m3#^t7=-a8%(!z'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-dev-only")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# En Vercel, por defecto NO mostramos debug.
+# Entornos
 _is_vercel = os.getenv("VERCEL") == "1" or bool(os.getenv("VERCEL_URL"))
-DEBUG = os.getenv("DJANGO_DEBUG", "0" if _is_vercel else "1") == "1"
+_is_render = os.getenv("RENDER") == "true" or bool(os.getenv("RENDER_EXTERNAL_HOSTNAME"))
 
-# Vercel injecta VERCEL_URL (sin esquema). Permitimos también localhost.
+# DEBUG: por defecto True solo en local
+DEBUG = os.getenv("DJANGO_DEBUG", "0" if (_is_vercel or _is_render) else "1") == "1"
+
+# Hosts
 _vercel_url = os.getenv("VERCEL_URL")
+_render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 if _vercel_url:
     ALLOWED_HOSTS += [_vercel_url, f".{_vercel_url.split('.', 1)[-1]}"]
+if _render_host:
+    ALLOWED_HOSTS += [_render_host]
+
+# CSRF (Render usa https)
+CSRF_TRUSTED_ORIGINS = []
+if _render_host:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{_render_host}")
 
 
 # Application definition
@@ -53,6 +64,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -85,14 +97,24 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        # En Vercel (/var/task) es de solo lectura. Usamos /tmp (escritura efímera).
-        'NAME': (Path("/tmp") / "db.sqlite3") if _is_vercel else (BASE_DIR / 'db.sqlite3'),
-        'OPTIONS': ({'timeout': 20} if _is_vercel else {}),
+_database_url = os.getenv("DATABASE_URL")
+if _database_url:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=_database_url,
+            conn_max_age=600,
+            ssl_require=not DEBUG,
+        )
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            # En Vercel (/var/task) es de solo lectura. Usamos /tmp (escritura efímera).
+            'NAME': (Path("/tmp") / "db.sqlite3") if _is_vercel else (BASE_DIR / 'db.sqlite3'),
+            'OPTIONS': ({'timeout': 20} if _is_vercel else {}),
+        }
+    }
 
 
 # Password validation
@@ -139,6 +161,11 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}
 
 # Media (subida de archivos)
 MEDIA_URL = '/media/'

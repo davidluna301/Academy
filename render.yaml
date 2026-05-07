@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: academy
+    env: python
+    plan: free
+    buildCommand: |
+      python -m pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      # Recomendado: crea una base Postgres en Render y conecta con DATABASE_URL
+      # - key: DATABASE_URL
+      #   fromDatabase:
+      #     name: academy-db
+      #     property: connectionString
+
