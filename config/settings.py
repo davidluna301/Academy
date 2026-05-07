@@ -90,6 +90,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         # En Vercel (/var/task) es de solo lectura. Usamos /tmp (escritura efímera).
         'NAME': (Path("/tmp") / "db.sqlite3") if _is_vercel else (BASE_DIR / 'db.sqlite3'),
+        'OPTIONS': ({'timeout': 20} if _is_vercel else {}),
     }
 }
 
