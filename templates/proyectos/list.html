@@ -25,8 +25,13 @@
   <form method="get" style="margin-bottom: 12px;">
     <div class="form-group">
       <label for="estado">Estado</label>
-      <input type="text" name="estado" id="estado" value="{{ request.GET.estado }}" placeholder="enviado / revision / aprobado" />
-      <div class="help">Tip: usa `enviado`, `revision` o `aprobado`.</div>
+      <select name="estado" id="estado">
+        <option value="" {% if not request.GET.estado %}selected{% endif %}>Todos</option>
+        <option value="enviado" {% if request.GET.estado == "enviado" %}selected{% endif %}>Enviado</option>
+        <option value="revision" {% if request.GET.estado == "revision" %}selected{% endif %}>En Revisión</option>
+        <option value="aprobado" {% if request.GET.estado == "aprobado" %}selected{% endif %}>Aprobado</option>
+      </select>
+      <div class="help">Filtra rápidamente por estado.</div>
     </div>
     <div class="form-group">
       <label for="estudiante">Estudiante (solo docente)</label>
