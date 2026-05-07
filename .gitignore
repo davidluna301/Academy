@@ -3,8 +3,10 @@
 __pycache__/
 *.pyc
 media/
+staticfiles/
 .env
 venv/
 .venv/
 demo_users.txt
+.vercel/
 

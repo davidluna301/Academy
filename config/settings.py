@@ -24,9 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-p+58eccp6218vt7i@n10#fo+%__4_on_jnt@m3#^t7=-a8%(!z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
 
-ALLOWED_HOSTS = []
+# Vercel injecta VERCEL_URL (sin esquema). Permitimos también localhost.
+_vercel_url = os.getenv("VERCEL_URL")
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+if _vercel_url:
+    ALLOWED_HOSTS += [_vercel_url, f".{_vercel_url.split('.', 1)[-1]}"]
 
 
 # Application definition
@@ -130,6 +134,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Media (subida de archivos)
 MEDIA_URL = '/media/'
