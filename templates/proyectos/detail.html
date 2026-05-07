@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ proyecto.titulo }}{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <div class="page-title">{{ proyecto.titulo }}</div>
+      <div class="muted">
+        Estado: {{ proyecto.get_estado_display }} · Enviado: {{ proyecto.fecha_envio|date:"Y-m-d H:i" }}
+        {% if proyecto.fecha_revision %} · Revisado: {{ proyecto.fecha_revision|date:"Y-m-d H:i" }}{% endif %}
+        {% if proyecto.calificacion is not None %} · Nota: {{ proyecto.calificacion }}{% endif %}
+      </div>
+      <div class="muted">Estudiante: {{ proyecto.estudiante.username }} ({{ proyecto.estudiante.email }})</div>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'proyecto_list' %}">Volver</a>
+  </div>
+
+  <div class="card">
+    <div class="muted" style="margin-bottom: 8px;">Descripción</div>
+    <div style="white-space: pre-wrap;">{{ proyecto.descripcion }}</div>
+
+    {% if proyecto.documento %}
+      <div class="actions">
+        <a class="btn btn-secondary" href="{{ proyecto.documento.url }}">Ver documento</a>
+      </div>
+    {% endif %}
+
+    <div class="actions">
+      {% if not es_docente %}
+        <a class="btn btn-secondary" href="{% url 'proyecto_update' proyecto.pk %}">Editar</a>
+        <a class="btn btn-danger" href="{% url 'proyecto_delete' proyecto.pk %}">Eliminar</a>
+      {% else %}
+        <a class="btn btn-secondary" href="{% url 'proyecto_revision' proyecto.pk %}">Cambiar estado / calificación</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Comentarios</div>
+    <div class="muted" style="margin-bottom: 10px;">
+      {% if proyecto.comentarios_bloqueados %}
+        Este proyecto está aprobado; los comentarios están bloqueados.
+      {% else %}
+        Comunicación entre docente y estudiante.
+      {% endif %}
+    </div>
+
+    {% if proyecto.comentarios.all %}
+      {% for c in proyecto.comentarios.all %}
+        <div class="card" style="margin: 10px 0;">
+          <div class="muted">{{ c.usuario.username }} · {{ c.fecha|date:"Y-m-d H:i" }}</div>
+          <div style="white-space: pre-wrap;">{{ c.texto }}</div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="muted">Aún no hay comentarios.</div>
+    {% endif %}
+
+    {% if not proyecto.comentarios_bloqueados %}
+      <form method="post" action="{% url 'comentario_create' proyecto.pk %}" style="margin-top: 12px;">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ comentario_form.texto.id_for_label }}">Nuevo comentario</label>
+          {{ comentario_form.texto }}
+          {{ comentario_form.texto.errors }}
+        </div>
+        <div class="actions">
+          <button class="btn" type="submit">Enviar comentario</button>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+{% endblock %}
+

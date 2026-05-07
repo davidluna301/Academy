@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <div class="page-title">{{ title }}</div>
+      <div class="muted">Los cambios aplican solo a tus proyectos.</div>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'proyecto_list' %}">Cancelar</a>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      {{ form.non_field_errors }}
+    {% endif %}
+
+    <div class="form-group">
+      <label for="{{ form.titulo.id_for_label }}">Título</label>
+      {{ form.titulo }}
+      {{ form.titulo.errors }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.descripcion.id_for_label }}">Descripción</label>
+      {{ form.descripcion }}
+      {{ form.descripcion.errors }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.documento.id_for_label }}">Documento (PDF)</label>
+      {{ form.documento }}
+      {{ form.documento.errors }}
+      <div class="help">Puedes adjuntar un archivo (opcional).</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="submit">{{ submit_label }}</button>
+      <a class="btn btn-secondary" href="{% url 'proyecto_list' %}">Volver</a>
+    </div>
+  </form>
+{% endblock %}
+
