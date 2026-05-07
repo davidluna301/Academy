@@ -1,0 +1,71 @@
+cambiar contexto del proyecto base manteniendo:
+funcionalidad (CRUD y login)
+Diseño
+
+contexto: 
+
+ Sistema de Seguimiento de Proyectos Académicos
+Objetivo general
+Implementar una aplicación Django que permita registrar proyectos académicos,
+gestionarlos mediante distintos estados, y permitir la comunicación entre docentes y
+estudiantes con comentarios y notificaciones por correo electrónico (nombre DEL
+PROYECTO_NOMBRE_ESTUDIANTE, nombre de las aplicaciones_
+NOMBRE_ESTUDIANTE).
+Requerimientos funcionales
+1. Autenticación y roles
+o Autenticación mediante login/logout.
+o Roles:
+ Estudiante: crea y gestiona sus proyectos.
+ Docente: revisa, comenta y aprueba proyectos.
+2. Gestión de proyectos (CRUD)
+o Los estudiantes pueden crear, actualizar y eliminar proyectos propios.
+o Los docentes pueden cambiar el estado y asignar calificación.
+o Cuando el estado cambia a “Aprobado”, se bloquea la adición de nuevos
+comentarios.
+3. Gestión de comentarios
+o Cada comentario debe registrar el usuario, fecha y texto.
+o Al crear un comentario, se envía una notificación por correo electrónico
+al estudiante.
+4. Visualización
+o Filtrar proyectos por estado o estudiante.
+o Exportar la lista en formato CSV o PDF.
+Requerimientos técnicos
+ Uso de django-crispy-forms y vistas basadas en clases.
+ Decoradores de permiso y control de grupos.
+ Configuración de envío de correo (EmailMessage o send_mail).
+Modelo principal: Proyecto
+Campo Tipo de dato Descripción
+titulo CharField(max_length=200) Título del
+proyecto.
+descripcion TextField()
+Descripción o
+resumen del
+proyecto.
+estudiante ForeignKey(User, related_name='proyectos',
+on_delete=models.CASCADE)
+Usuario que
+registra el
+proyecto.
+documento FileField(upload_to='proyectos/')
+Archivo asociado
+(por ejemplo,
+PDF).
+estado
+CharField(max_length=20, choices=[('enviado',
+'Enviado'), ('revisión', 'En Revisión'), ('aprobado',
+'Aprobado')])
+Estado actual del
+proyecto.
+fecha_envio DateTimeField(auto_now_add=True) Fecha de creación
+del registro.
+fecha_revisio
+n
+DateTimeField(null=True, blank=True) Fecha de la última
+revisión
+Campo Tipo de dato Descripción
+(opcional).
+calificacion DecimalField(max_digits=4, decimal_places=2,
+null=True, blank=True)
+Calificación
+asignada
+(opcional).

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }}{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <div class="page-title">{{ item.title }}</div>
+      <div class="muted">
+        Creado: {{ item.created_at|date:"Y-m-d H:i" }} · Actualizado: {{ item.updated_at|date:"Y-m-d H:i" }}
+      </div>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'list' %}">Volver</a>
+  </div>
+
+  <div class="card">
+    <div class="muted" style="margin-bottom: 8px;">Descripción</div>
+    <div style="white-space: pre-wrap;">{{ item.description }}</div>
+
+    <div class="actions">
+      <a class="btn btn-secondary" href="{% url 'update' item.pk %}">Editar</a>
+      <a class="btn btn-danger" href="{% url 'delete' item.pk %}">Eliminar</a>
+    </div>
+  </div>
+{% endblock %}
+

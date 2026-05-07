@@ -1,0 +1,10 @@
+*.sqlite3
+*.bak
+__pycache__/
+*.pyc
+media/
+.env
+venv/
+.venv/
+demo_users.txt
+

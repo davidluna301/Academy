@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <div class="page-title">Crear cuenta</div>
+      <div class="muted">Te registras como estudiante. Un docente puede revisar tus proyectos.</div>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'login' %}">Ya tengo cuenta</a>
+  </div>
+
+  <div class="card" style="margin-bottom: 12px;">
+    <div class="card-title">Rol por defecto</div>
+    <div class="muted">Toda cuenta creada aquí queda en el grupo “Estudiante”.</div>
+  </div>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      {{ form.non_field_errors }}
+    {% endif %}
+
+    <div class="form-group">
+      <label for="{{ form.username.id_for_label }}">Usuario</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+      {% if form.username.help_text %}<div class="help">{{ form.username.help_text|safe }}</div>{% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.email.id_for_label }}">Email</label>
+      {{ form.email }}
+      {{ form.email.errors }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.password1.id_for_label }}">Contraseña</label>
+      {{ form.password1 }}
+      {{ form.password1.errors }}
+      {% if form.password1.help_text %}<div class="help">{{ form.password1.help_text|safe }}</div>{% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.password2.id_for_label }}">Confirmar contraseña</label>
+      {{ form.password2 }}
+      {{ form.password2.errors }}
+      {% if form.password2.help_text %}<div class="help">{{ form.password2.help_text|safe }}</div>{% endif %}
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="submit">Crear cuenta</button>
+    </div>
+  </form>
+{% endblock %}
+
