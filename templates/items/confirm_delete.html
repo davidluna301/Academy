@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <div class="page-title">Eliminar item</div>
+      <div class="muted">Esta acción no se puede deshacer.</div>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'detail' item.pk %}">Volver</a>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="card" style="border: none; padding: 0; margin: 0 0 14px;">
+      <div class="card-title">{{ item.title }}</div>
+      <div class="muted">¿Seguro que deseas eliminar este item?</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-danger" type="submit">Sí, eliminar</button>
+      <a class="btn btn-secondary" href="{% url 'detail' item.pk %}">Cancelar</a>
+    </div>
+  </form>
+{% endblock %}
+

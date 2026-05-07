@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Revisión{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <div>
+      <div class="page-title">Revisión del proyecto</div>
+      <div class="muted">{{ object.titulo }} · Estudiante: {{ object.estudiante.username }}</div>
+    </div>
+    <a class="btn btn-secondary" href="{% url 'proyecto_detail' object.pk %}">Volver</a>
+  </div>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      {{ form.non_field_errors }}
+    {% endif %}
+
+    <div class="form-group">
+      <label for="{{ form.estado.id_for_label }}">Estado</label>
+      {{ form.estado }}
+      {{ form.estado.errors }}
+      <div class="help">Al cambiar a “Aprobado”, se bloquean nuevos comentarios.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.calificacion.id_for_label }}">Calificación</label>
+      {{ form.calificacion }}
+      {{ form.calificacion.errors }}
+      <div class="help">Opcional. Ejemplo: 4.50</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="submit">Guardar revisión</button>
+    </div>
+  </form>
+{% endblock %}
+

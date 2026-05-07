@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Redirigido{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-title">Se actualizó la ruta</div>
+    <div class="muted">Ahora usa <a href="{% url 'proyecto_list' %}">/proyectos/</a>.</div>
+  </div>
+{% endblock %}
+

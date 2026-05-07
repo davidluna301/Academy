@@ -1,0 +1,183 @@
+# AGENTE: Evidenciar contribuciones reales de 3 desarrolladores en GitHub
+
+## CONTEXTO
+El repositorio ya tiene la estructura de ramas (main, develop, feature/login,
+feature/crud). Ahora cada desarrollador debe tener commits firmados con su
+propia cuenta de GitHub para que aparezcan en el historial, en el grafo de
+contribuciones (Insights → Network) y en el perfil personal de cada uno.
+
+---
+
+## REQUISITO CLAVE
+GitHub atribuye un commit a un usuario cuando el email configurado en Git
+coincide exactamente con el email de la cuenta GitHub de esa persona.
+Sin esto, los commits aparecen como "ghost" o anónimos.
+
+---
+
+## CONFIGURACIÓN POR DESARROLLADOR (hacer en la máquina de cada uno)
+
+### Desarrollador 1 (feature/login)
+git config user.name  "NombreReal Dev1"
+git config user.email "email_github_dev1@ejemplo.com"
+
+### Desarrollador 2 (feature/crud)
+git config user.name  "NombreReal Dev2"
+git config user.email "email_github_dev2@ejemplo.com"
+
+### Desarrollador 3 (Tech Lead / develop + releases)
+git config user.name  "NombreReal Dev3"
+git config user.email "email_github_dev3@ejemplo.com"
+
+> Usar `--global` solo si la máquina es de uso exclusivo del desarrollador.
+> En máquinas compartidas, omitir `--global` para que aplique solo al repo.
+
+---
+
+## OPCIÓN A — Cada desarrollador trabaja desde su propia máquina (ideal)
+
+Esta es la forma correcta. Cada desarrollador clona el repo y trabaja en su rama.
+
+### DEV 1 — Clonar y trabajar en feature/login
+En la máquina del Dev 1
+git clone <URL_REPO>
+cd <nombre-repo>
+git config user.name  "Dev1 Nombre"
+git config user.email "dev1@email.com"
+git checkout develop
+git checkout -b feature/login
+... hacer cambios en archivos de autenticación ...
+git add apps/usuarios/models.py
+git commit -m "feat: modelo de usuario personalizado"
+git add apps/usuarios/views.py
+git commit -m "feat: vistas login y logout"
+git add apps/usuarios/templates/
+git commit -m "feat: templates de autenticación"
+git add apps/usuarios/urls.py
+git commit -m "feat: URLs del módulo de autenticación"
+git push -u origin feature/login
+Abrir PR en GitHub: feature/login → develop
+
+### DEV 2 — Clonar y trabajar en feature/crud
+En la máquina del Dev 2
+git clone <URL_REPO>
+cd <nombre-repo>
+git config user.name  "Dev2 Nombre"
+git config user.email "dev2@email.com"
+git checkout develop
+git checkout -b feature/crud
+... hacer cambios en archivos del CRUD ...
+git add apps/productos/models.py
+git commit -m "feat: modelos de entidades principales"
+git add apps/productos/views.py
+git commit -m "feat: vistas list, create, update, delete"
+git add apps/productos/forms.py
+git commit -m "feat: formularios del módulo CRUD"
+git add apps/productos/templates/
+git commit -m "feat: templates lista, detalle y formulario"
+git add apps/productos/urls.py
+git commit -m "feat: URLs del módulo CRUD"
+git push -u origin feature/crud
+Abrir PR en GitHub: feature/crud → develop
+
+### DEV 3 — Tech Lead, trabaja en develop + revisiones
+En la máquina del Dev 3
+git clone <URL_REPO>
+cd <nombre-repo>
+git config user.name  "Dev3 Nombre"
+git config user.email "dev3@email.com"
+git checkout develop
+Agregar README, configuración, documentación
+git add README.md
+git commit -m "docs: agregar README con instrucciones de instalación"
+git add requirements.txt
+git commit -m "chore: actualizar dependencias del proyecto"
+git add .env.example
+git commit -m "chore: agregar archivo de variables de entorno de ejemplo"
+git push origin develop
+Aprobar y fusionar los PRs de Dev1 y Dev2 desde GitHub
+Luego sincronizar y hacer el release
+git pull origin develop
+git commit --allow-empty -m "chore: integración completa login + crud, QA aprobado"
+git push origin develop
+
+---
+
+## OPCIÓN B — Solo hay una máquina (simular los 3 desarrolladores)
+
+Si el equipo trabaja en una sola computadora, cambiar la identidad Git antes
+de cada sesión de commits para que GitHub los atribuya a la cuenta correcta.
+
+### Secuencia en una sola máquina
+=== SESIÓN DEL DEV 1 ===
+git config user.name  "Dev1 Nombre"
+git config user.email "dev1@email.com"
+git checkout feature/login
+git add apps/usuarios/models.py
+git commit -m "feat: modelo de usuario personalizado"
+git add apps/usuarios/views.py
+git commit -m "feat: vistas login y logout"
+git add apps/usuarios/templates/
+git commit -m "feat: templates de autenticación"
+git push origin feature/login
+=== SESIÓN DEL DEV 2 ===
+git config user.name  "Dev2 Nombre"
+git config user.email "dev2@email.com"
+git checkout feature/crud
+git add apps/productos/models.py
+git commit -m "feat: modelos de entidades principales"
+git add apps/productos/views.py
+git commit -m "feat: vistas CRUD completas"
+git add apps/productos/templates/
+git commit -m "feat: templates lista y formulario"
+git push origin feature/crud
+=== SESIÓN DEL DEV 3 (Tech Lead) ===
+git config user.name  "Dev3 Nombre"
+git config user.email "dev3@email.com"
+git checkout develop
+git add README.md .env.example requirements.txt
+git commit -m "docs: README y configuración del entorno"
+git push origin develop
+Fusionar los PRs de Dev1 y Dev2 desde la cuenta GitHub del Dev3
+
+---
+
+## VERIFICAR QUE LAS CONTRIBUCIONES QUEDARON BIEN REGISTRADAS
+
+Ejecutar este comando para ver quién firmó cada commit:
+git log --pretty=format:"%h | %an | %ae | %s" --all
+
+La salida debe mostrar los 3 nombres/emails distintos distribuidos entre ramas.
+
+Para verificar visualmente en GitHub:
+- Repositorio → Insights → Contributors: deben aparecer los 3 usuarios.
+- Repositorio → Insights → Network: debe mostrar el grafo completo de ramas.
+- Perfil individual de cada GitHub: el día de los commits debe aparecer
+  verde en el calendario de contribuciones de cada desarrollador.
+
+---
+
+## CHECKLIST FINAL DE EVIDENCIA EN GITHUB
+
+[ ] Dev1 tiene commits en la rama feature/login con su cuenta
+[ ] Dev2 tiene commits en la rama feature/crud con su cuenta
+[ ] Dev3 tiene commits en develop, README y hace los merges de los PRs
+[ ] Los 3 aparecen en Insights → Contributors del repositorio
+[ ] Hay al menos 2 Pull Requests cerrados (uno por feature)
+[ ] El historial de main muestra los merges con los autores correctos
+[ ] Cada desarrollador ve el repo en su perfil GitHub bajo "Repositories"
+[ ] El calendario de contribuciones de cada perfil refleja actividad
+
+---
+
+## NOTAS IMPORTANTES
+
+- El email de Git DEBE coincidir con el email principal (o verificado)
+  de la cuenta GitHub. Si no coincide, el commit no se vincula al perfil.
+- Si un desarrollador usa GitHub con email privado (noreply), debe copiar
+  su email noreply desde: GitHub → Settings → Emails y usarlo en git config.
+  Formato: `12345678+username@users.noreply.github.com`
+- Los PRs deben ser aprobados y fusionados por el Dev3 (Tech Lead) para
+  que su cuenta también aparezca como contribuidor en el historial.
+- Invitar a los 3 como colaboradores del repo antes de empezar:
+  Repositorio → Settings → Collaborators → Add people.
