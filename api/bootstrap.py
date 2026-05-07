@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import time
+import sqlite3
 
 from django.core.management import call_command
 
@@ -17,7 +18,9 @@ def ensure_db_ready() -> None:
         return
 
     sentinel = Path("/tmp") / ".academy_migrated"
-    if sentinel.exists():
+    db_path = Path("/tmp") / "db.sqlite3"
+
+    if sentinel.exists() and _has_auth_tables(db_path):
         return
 
     lock = Path("/tmp") / ".academy_migrate_lock"
@@ -47,6 +50,10 @@ def ensure_db_ready() -> None:
         # Si no apareció sentinel, intentamos migrar igualmente (último recurso)
 
     try:
+        # Asegura que Django esté inicializado antes de call_command
+        import django
+
+        django.setup()
         call_command("migrate", interactive=False, run_syncdb=True, verbosity=0)
     except Exception:
         # Si falla, borramos sentinel por si se llegó a crear en paralelo
@@ -73,4 +80,23 @@ def ensure_db_ready() -> None:
             pass
 
     sentinel.write_text("ok", encoding="utf-8")
+
+
+def _has_auth_tables(db_path: Path) -> bool:
+    """
+    Verifica si la DB ya tiene al menos la tabla de auth (indicador de migrate aplicado).
+    Si la DB no existe o no se puede abrir, devuelve False.
+    """
+    try:
+        if not db_path.exists():
+            return False
+        conn = sqlite3.connect(str(db_path))
+        try:
+            cur = conn.cursor()
+            cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='auth_user'")
+            return cur.fetchone() is not None
+        finally:
+            conn.close()
+    except Exception:
+        return False
 
