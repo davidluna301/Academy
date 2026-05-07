@@ -1,0 +1,25 @@
+﻿*   b43f508 (HEAD -> main, tag: v1.0.0, origin/main, origin/HEAD) | BurbanoValentina <Valentinaburbano1406@gmail.com> | 2026-05-07 08:22:49 -0500 | release: merge develop into main
+|\  
+| *   c937a50 (origin/develop, develop) | BurbanoValentina <Valentinaburbano1406@gmail.com> | 2026-05-07 08:22:26 -0500 | merge: integrar feature/crud (crud/export/seed)
+| |\  
+| * \   ea2921d | BurbanoValentina <Valentinaburbano1406@gmail.com> | 2026-05-07 08:21:45 -0500 | merge: integrar feature/login (auth)
+| |\ \  
+| | * | 6b22628 (origin/feature/login, feature/login) | davidluna301 <david.lunamar@gmail.com> | 2026-05-07 08:21:29 -0500 | feat(auth): mensajes para usuarios demo y rol estudiante
+| | | * f6cff7d (origin/feature/crud, feature/crud) | Santiago25-lab <edwin.urbina@campusucc.edu.co> | 2026-05-07 08:20:46 -0500 | feat(crud): ampliar seed demo con mas usuarios y proyectos
+| | | * 548730d | Santiago25-lab <edwin.urbina@campusucc.edu.co> | 2026-05-07 08:15:15 -0500 | feat(crud): filtro de estado con selector
+| | |/  
+| |/|   
+| * | 3ec087f | BurbanoValentina <Valentinaburbano1406@gmail.com> | 2026-05-07 08:14:51 -0500 | docs: instrucciones de instalacion y rutas
+| * | e6ccb9e | David Alejandro Luna <david.lunamar@campusucc.edu.co> | 2026-05-07 08:14:26 -0500 | chore: merge feature/login into develop
+|/| | 
+| |/  
+| * 9ab3855 | davidluna301 <david.lunamar@gmail.com> | 2026-05-07 08:14:10 -0500 | feat: Academy app (auth y proyectos)
+|/  
+* d3b6b45 | davidluna301 <david.lunamar@campusucc.edu.co> | 2026-05-07 07:44:53 -0500 | Create README.md
+
+== Resumen por autor ==
+     4	BurbanoValentina <Valentinaburbano1406@gmail.com>
+     2	Santiago25-lab <edwin.urbina@campusucc.edu.co>
+     2	davidluna301 <david.lunamar@gmail.com>
+     1	David Alejandro Luna <david.lunamar@campusucc.edu.co>
+     1	davidluna301 <david.lunamar@campusucc.edu.co>
