@@ -11,6 +11,11 @@
     <a class="btn btn-secondary" href="{% url 'register' %}">Crear cuenta</a>
   </div>
 
+  <div class="card" style="margin-bottom: 12px;">
+    <div class="card-title">Usuarios demo</div>
+    <div class="muted">Si cargaste datos simulados: docente `docente1` / estudiantes `estudiante1`, `estudiante2`, `estudiante3`.</div>
+  </div>
+
   <form method="post" novalidate>
     {% csrf_token %}
 

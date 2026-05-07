@@ -11,6 +11,11 @@
     <a class="btn btn-secondary" href="{% url 'login' %}">Ya tengo cuenta</a>
   </div>
 
+  <div class="card" style="margin-bottom: 12px;">
+    <div class="card-title">Rol por defecto</div>
+    <div class="muted">Toda cuenta creada aquí queda en el grupo “Estudiante”.</div>
+  </div>
+
   <form method="post" novalidate>
     {% csrf_token %}
 
