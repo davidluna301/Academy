@@ -21,6 +21,7 @@ DEMO_USERS: list[DemoUser] = [
     DemoUser(username="docente1", email="docente1@academy.test", password="Docente123!", group="Docente"),
     DemoUser(username="estudiante1", email="estudiante1@academy.test", password="Estudiante123!", group="Estudiante"),
     DemoUser(username="estudiante2", email="estudiante2@academy.test", password="Estudiante123!", group="Estudiante"),
+    DemoUser(username="estudiante3", email="estudiante3@academy.test", password="Estudiante123!", group="Estudiante"),
 ]
 
 
@@ -45,6 +46,7 @@ def seed_demo_data() -> None:
     # Proyectos para estudiantes
     e1 = users["estudiante1"]
     e2 = users["estudiante2"]
+    e3 = users["estudiante3"]
     d1 = users["docente1"]
 
     p1, _ = Proyecto.objects.get_or_create(
@@ -75,11 +77,20 @@ def seed_demo_data() -> None:
             "calificacion": 4.8,
         },
     )
+    p4, _ = Proyecto.objects.get_or_create(
+        estudiante=e3,
+        titulo="Plataforma de Evaluación de Cursos",
+        defaults={
+            "descripcion": "Proyecto demo adicional para pruebas de filtros y exportación.",
+            "estado": Proyecto.Estado.ENVIADO,
+        },
+    )
 
     _ensure_comment(p1, d1, "Recibido. En breve reviso el documento y te comento observaciones.")
     _ensure_comment(p2, d1, "Buen avance. Ajusta el alcance del dataset y agrega referencias.")
     _ensure_comment(p2, e1, "Listo profe, hoy subo la actualización con las referencias.")
     _ensure_comment(p3, d1, "Aprobado. Excelente trabajo.")
+    _ensure_comment(p4, e3, "Hola profe, adjunto el resumen inicial del proyecto.")
 
 
 def _ensure_comment(proyecto: Proyecto, usuario: User, texto: str) -> None:
